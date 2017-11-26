@@ -74,7 +74,7 @@ class ESWriterThread(BaseWriterThread):
             create_index(self.index_name, self.CONFIG)
         except P2ESError as e:
             raise P2ESError(
-                "Error while creating index {}: {}".format(
+                "Error while creating index {0}: {1}".format(
                     self.index_name, str(e)
                 )
             )

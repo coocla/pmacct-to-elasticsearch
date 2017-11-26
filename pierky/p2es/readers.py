@@ -38,7 +38,7 @@ class BaseReaderThread(P2ESThread):
         if "$" in s:
             res = s
             for k in dic:
-                res = res.replace("${}".format(k), str(dic[k]))
+                res = res.replace("${0}".format(k), str(dic[k]))
             return res
         return s
 
@@ -118,7 +118,7 @@ class BaseReader(object):
         for thread_idx in range(CONFIG['ReaderThreads']):
             self.readers.append(
                 self.READER_THREAD_CLASS(
-                    "reader{}".format(thread_idx),
+                    "reader{0}".format(thread_idx),
                     CONFIG,
                     errors_queue,
                     writer_queue

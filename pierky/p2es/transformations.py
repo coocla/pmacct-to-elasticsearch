@@ -37,7 +37,7 @@ def parse_conditions_list(c, d):
         else:
             raise P2ESError(
                 'Logical groups must begin with "AND" or "OR" '
-                '("{}" found)'.format(c[0])
+                '("{0}" found)'.format(c[0])
             )
     else:	
         # default to "AND" if not specified
@@ -60,7 +60,7 @@ def parse_conditions_dict(c, d, opfield):
             op = c[k]
 
             if not op in ('=', '>', '>=', '<', '<=', '!=', 'in', 'notin'):
-                raise P2ESError('Unexpected operator: "{}"'.format(op))
+                raise P2ESError('Unexpected operator: "{0}"'.format(op))
 	else:
             if n is None:
                 n = k
@@ -69,7 +69,7 @@ def parse_conditions_dict(c, d, opfield):
                 raise P2ESError('Only one name/value pair allowed')
 
     if op in ('in', 'notin') and not isinstance(v, list):
-        raise P2ESError('The "{}" operator requires a list'.format(op))
+        raise P2ESError('The "{0}" operator requires a list'.format(op))
 
     if n is None:
         raise P2ESError('Name/value pair expected')
@@ -94,7 +94,7 @@ def parse_conditions_dict(c, d, opfield):
     elif op == 'notin':
         return not d[n] in v
     else:
-        raise P2ESError('Operator not implemented: "{}"'.format(op))
+        raise P2ESError('Operator not implemented: "{0}"'.format(op))
 
 # Parse conditions c against data d.
 # Return: True | False (conditions matched / did not match).
@@ -105,7 +105,7 @@ def parse_conditions(c, d, opfield='__op__'):
     elif isinstance(c, dict):
         return parse_conditions_dict(c, d, opfield)
     else:
-        raise P2ESError('Unexpected object type {} from {}'.format(
+        raise P2ESError('Unexpected object type {0} from {1}'.format(
             type(c), str(c)
         ))
 
@@ -116,37 +116,37 @@ def test_transformation(tr):
     ret = True
 
     try:
-        tr_det = 'Transformations matrix ({})'.format(transformation)
+        tr_det = 'Transformations matrix ({0})'.format(transformation)
     except:
         tr_det = 'Transformations matrix'
 	
     if 'Conditions' not in tr:
-        raise P2ESError('{}, "Conditions" is missing'.format(tr_det))
+        raise P2ESError('{0}, "Conditions" is missing'.format(tr_det))
 
     if 'Actions' not in tr:
-        raise P2ESError('{}, "Actions" is missing'.format(tr_det))
+        raise P2ESError('{0}, "Actions" is missing'.format(tr_det))
 
     try:
-        parse_conditions(tr['Conditions'], {})
+        parse_conditions(tr['Conditions'], {0})
     except P2ESError as e:
-        raise P2ESError('{}, invalid "Conditions": {}'.format(tr_det, str(e)))
+        raise P2ESError('{0}, invalid "Conditions": {1}'.format(tr_det, str(e)))
 	
     for action in tr['Actions']:
         if 'Type' not in action:
-            raise P2ESError('{}, "Type" is missing'.format(tr_det))
+            raise P2ESError('{0}, "Type" is missing'.format(tr_det))
 
-        tr_det += ', action type = {}'.format(action['Type'])
+        tr_det += ', action type = {0}'.format(action['Type'])
 
         if action['Type'] not in ('AddField', 'AddFieldLookup', 'DelField'):
-            raise P2ESError('{}, "Type" unknown'.format(tr_det))
+            raise P2ESError('{0}, "Type" unknown'.format(tr_det))
 
         if 'Name' not in action:
-            raise P2ESError('{}, "Name" is missing'.format(tr_det))
+            raise P2ESError('{0}, "Name" is missing'.format(tr_det))
 
         if action['Type'] == 'AddField':
             if 'Value' not in action:
                 raise P2ESError(
-                    '{}, "Value" is missing for new field "{}"'.format(
+                    '{0}, "Value" is missing for new field "{1}"'.format(
                         tr_det, action['Name']
                     )
                 ) 
@@ -154,18 +154,18 @@ def test_transformation(tr):
         if action['Type'] == 'AddFieldLookup':
             if 'LookupFieldName' not in action:
                 raise P2ESError(
-                    '{}, "LookupFieldName" is missing for '
-                    'new field "{}"'.format(tr_det, action['Name'])
+                    '{0}, "LookupFieldName" is missing for '
+                    'new field "{1}"'.format(tr_det, action['Name'])
                 )
             if 'LookupTable' in action and 'LookupTableFile' in action:
                 raise P2ESError(
-                    '{}, only one from "LookupTable" and '
+                    '{0}, only one from "LookupTable" and '
                     '"LookupTableFile" allowed'.format(tr_det)
                 )
             if 'LookupTable' not in action and 'LookupTableFile' not in action:
                 raise P2ESError(
-                    '{}, "LookupTable" and "LookupTableFile" missing '
-                    'for new field "{}"'.format(tr_det, action['Name'])
+                    '{0}, "LookupTable" and "LookupTableFile" missing '
+                    'for new field "{1}"'.format(tr_det, action['Name'])
                 )
             if 'LookupTableFile' in action:
                 try:
@@ -173,7 +173,7 @@ def test_transformation(tr):
                         action['LookupTable'] = json.load(f)
                 except Exception as e:
 		    raise P2ESError(
-                        '{}, error loading lookup table from {}: {}'.format(
+                        '{0}, error loading lookup table from {1}: {2}'.format(
                             tr_det, action['LookupTableFile'], str(e)
                         )
                     )

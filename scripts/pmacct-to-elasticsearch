@@ -25,14 +25,14 @@ from pierky.p2es.version import __version__
 from pierky.p2es.writers import PrintOnlyWriterThread, ESWriterThread
 
 APP_NAME = 'pmacct-to-elasticsearch'
-CURRENT_RELEASE = 'v{}'.format(__version__)
+CURRENT_RELEASE = 'v{0}'.format(__version__)
 
 CONF_DIR = '/etc/p2es'
 
 DEF_CONFIG = {
     'CONF_DIR': CONF_DIR,
 
-    'LogFile': '/var/log/{}-$PluginName.log'.format(APP_NAME),
+    'LogFile': '/var/log/{0}-$PluginName.log'.format(APP_NAME),
 
     'ES_URL': 'http://localhost:9200',
     'ES_IndexName': '',
@@ -83,13 +83,13 @@ def check_config():
     if not 'ES_IndexTemplateFileName' in CONFIG:
         CONFIG['ES_IndexTemplateFileName'] = 'new-index-template.json'
     else:
-        index_tpl_path = '{}/{}'.format(
+        index_tpl_path = '{0}/{1}'.format(
             CONF_DIR, CONFIG['ES_IndexTemplateFileName']
         )
 
         if not os.path.isfile(index_tpl_path):
             log(logging.ERROR,
-                'Can\'t find index template file {}'.format(index_tpl_path))
+                'Can\'t find index template file {0}'.format(index_tpl_path))
             return False
         else:
             with open(index_tpl_path, "r") as f:
@@ -97,8 +97,8 @@ def check_config():
                     index_tpl = json.load(f)
                 except Exception as e:
                     log(logging.ERROR,
-                        'Index template from {} is not '
-                        'in valid JSON format: {}'.format(
+                        'Index template from {0} is not '
+                        'in valid JSON format: {1}'.format(
                             index_tpl_path, str(e)
                         ),
                         exc_info=True)
@@ -162,7 +162,7 @@ def check_config():
     valid_input_formats = ('json', 'csv')
     if CONFIG['InputFormat'] not in valid_input_formats:
         log(logging.ERROR,
-            'Unknown input format "{}": must be one of {}'.format(
+            'Unknown input format "{0}": must be one of {1}'.format(
                 CONFIG['InputFormat'], ", ".join(valid_input_formats)
             )
         )
@@ -174,7 +174,7 @@ def check_config():
                 test_transformation(tr)
             except P2ESError as e:
                 log(logging.ERROR,
-                    'Invalid transformation: {}'.format(str(e)))
+                    'Invalid transformation: {0}'.format(str(e)))
                 return False
 
     return True
@@ -211,7 +211,7 @@ def setup_logging(baselogfile=None):
             logger.addHandler(hdlr)
         except:
             log(logging.ERROR,
-                "Can't setup logging to file {}. "
+                "Can't setup logging to file {0}. "
                 "Ensure it has write permissions for the current user.".format(
                     logfilepath
                 )
@@ -236,10 +236,10 @@ def main():
     global CONF_DIR
 
     parser = argparse.ArgumentParser(
-        description="pmacct-to-elasticsearch {}: a tool to read "
+        description="pmacct-to-elasticsearch {0}: a tool to read "
                     "pmacct's output and to store it into "
                     "ElasticSearch.".format(CURRENT_RELEASE),
-        epilog="Copyright (c) 2014-{} - Pier Carlo Chiodi - "
+        epilog="Copyright (c) 2014-{0} - Pier Carlo Chiodi - "
                "https://pierky.com".format(2017)
     )
     parser.add_argument(
@@ -377,7 +377,7 @@ def main():
         with open(args.test_condition_data, "r") as f:
             d = json.load(f)
         print(
-            "Tested condition evaluated to {}".format(
+            "Tested condition evaluated to {0}".format(
                 parse_conditions(c, d)
             )
         )
@@ -392,13 +392,13 @@ def main():
     CONFIG["PluginName"] = args.pluginname
 
     # Loading configuration
-    new_cfg_file_name = "{}.conf".format(CONFIG["PluginName"])
+    new_cfg_file_name = "{0}.conf".format(CONFIG["PluginName"])
     try:
-        with open('{}/{}'.format(CONF_DIR, new_cfg_file_name), "r") as f:
+        with open('{0}/{1}'.format(CONF_DIR, new_cfg_file_name), "r") as f:
             new_cfg = json.load(f)
     except:
         log(logging.ERROR,
-            'Error loading configuration from {}/{}'.format(
+            'Error loading configuration from {0}/{1}'.format(
                 CONF_DIR, new_cfg_file_name),
             exc_info=True)
         return False
@@ -486,7 +486,7 @@ def main():
         reader.process_input()
     except Exception as e:
         log(logging.ERROR,
-            "Error while processing input: {}".format(str(e)))
+            "Error while processing input: {0}".format(str(e)))
         ret_code = False
     finally:
         reader.finalize()
